@@ -34,7 +34,7 @@ def receive_result(request):
                              extra=form.extra_params())
         logger.debug("return ok to robokassa")
         return HttpResponse('OK%s' % id)
-    logger.debug("return bad to robokassa. errors: {}".format(form.errors()))
+    logger.debug("return bad to robokassa. errors: {}".format(form.errors))
     return HttpResponse('error: bad signature')
 
 
