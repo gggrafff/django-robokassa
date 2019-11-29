@@ -4,17 +4,23 @@ from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from robokassa.conf import USE_POST
+from robokassa.conf import USE_POST, LOGGER_NAME
 from robokassa.forms import ResultURLForm, SuccessRedirectForm, FailRedirectForm
 from robokassa.models import SuccessNotification
 from robokassa.signals import result_received, success_page_visited, fail_page_visited
+import logging
+
+logger = logging.getLogger(LOGGER_NAME)
+
 
 @csrf_exempt
 def receive_result(request):
     """ обработчик для ResultURL. """
     data = request.POST if USE_POST else request.GET
+    logger.debug("receive result from robokassa: {}".format(data))
     form = ResultURLForm(data)
     if form.is_valid():
+        logger.debug("result form from robokassa is valid")
         id, sum = form.cleaned_data['InvId'], form.cleaned_data['OutSum']
 
         # сохраняем данные об успешном уведомлении в базе, чтобы
@@ -26,8 +32,9 @@ def receive_result(request):
         # осуществить в обработчике сигнала robokassa.signals.result_received
         result_received.send(sender=notification, InvId=id, OutSum=sum,
                              extra=form.extra_params())
-
+        logger.debug("return ok to robokassa")
         return HttpResponse('OK%s' % id)
+    logger.debug("return bad to robokassa")
     return HttpResponse('error: bad signature')
 
 

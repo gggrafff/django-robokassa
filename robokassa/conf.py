@@ -28,3 +28,5 @@ if TEST_MODE:
 
 # список пользовательских параметров ("shp" к ним приписывать не нужно)
 EXTRA_PARAMS = sorted(getattr(settings, 'ROBOKASSA_EXTRA_PARAMS', []))
+
+LOGGER_NAME = getattr(settings, 'ROBOKASSA_LOGGER_NAME', 'robokassa')

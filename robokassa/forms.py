@@ -5,11 +5,11 @@ from urllib.parse import urlencode
 from django import forms
 
 from robokassa.conf import LOGIN, PASSWORD1, PASSWORD2, TEST_MODE
-from robokassa.conf import STRICT_CHECK, FORM_TARGET, EXTRA_PARAMS
+from robokassa.conf import STRICT_CHECK, FORM_TARGET, EXTRA_PARAMS, LOGGER_NAME
 from robokassa.models import SuccessNotification
 import logging
 
-logger = logging.getLogger('custom_app')
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class BaseRobokassaForm(forms.Form):
