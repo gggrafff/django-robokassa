@@ -20,12 +20,12 @@ def receive_result(request):
         # сохраняем данные об успешном уведомлении в базе, чтобы
         # можно было выполнить дополнительную проверку на странице успешного
         # заказа
-        notification = SuccessNotification.objects.create(InvId = id, OutSum = sum)
+        notification = SuccessNotification.objects.create(InvId=id, OutSum=sum)
 
         # дополнительные действия с заказом (например, смену его статуса) можно
         # осуществить в обработчике сигнала robokassa.signals.result_received
-        result_received.send(sender = notification, InvId = id, OutSum = sum,
-                             extra = form.extra_params())
+        result_received.send(sender=notification, InvId=id, OutSum=sum,
+                             extra=form.extra_params())
 
         return HttpResponse('OK%s' % id)
     return HttpResponse('error: bad signature')
@@ -33,7 +33,7 @@ def receive_result(request):
 
 @csrf_exempt
 def success(request, template_name='robokassa/success.html', extra_context=None,
-            error_template_name = 'robokassa/error.html'):
+            error_template_name='robokassa/error.html'):
     """ обработчик для SuccessURL """
 
     data = request.POST if USE_POST else request.GET
@@ -43,8 +43,8 @@ def success(request, template_name='robokassa/success.html', extra_context=None,
 
         # в случае, когда не используется строгая проверка, действия с заказом
         # можно осуществлять в обработчике сигнала robokassa.signals.success_page_visited
-        success_page_visited.send(sender = form, InvId = id, OutSum = sum,
-                                  extra = form.extra_params())
+        success_page_visited.send(sender=form, InvId=id, OutSum=sum,
+                                  extra=form.extra_params())
 
         context = {'InvId': id, 'OutSum': sum, 'form': form}
         context.update(form.extra_params())
@@ -56,7 +56,7 @@ def success(request, template_name='robokassa/success.html', extra_context=None,
 
 @csrf_exempt
 def fail(request, template_name='robokassa/fail.html', extra_context=None,
-         error_template_name = 'robokassa/error.html'):
+         error_template_name='robokassa/error.html'):
     """ обработчик для FailURL """
 
     data = request.POST if USE_POST else request.GET
@@ -67,8 +67,8 @@ def fail(request, template_name='robokassa/fail.html', extra_context=None,
         # дополнительные действия с заказом (например, смену его статуса для
         # разблокировки товара на складе) можно осуществить в обработчике
         # сигнала robokassa.signals.fail_page_visited
-        fail_page_visited.send(sender = form, InvId = id, OutSum = sum,
-                               extra = form.extra_params())
+        fail_page_visited.send(sender=form, InvId=id, OutSum=sum,
+                               extra=form.extra_params())
 
         context = {'InvId': id, 'OutSum': sum, 'form': form}
         context.update(form.extra_params())
