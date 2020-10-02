@@ -7,9 +7,6 @@ from django import forms
 from robokassa.conf import LOGIN, PASSWORD1, PASSWORD2, TEST_MODE
 from robokassa.conf import STRICT_CHECK, FORM_TARGET, EXTRA_PARAMS
 from robokassa.models import SuccessNotification
-import logging
-
-logger = logging.getLogger('custom_app')
 
 
 class BaseRobokassaForm(forms.Form):
@@ -36,7 +33,6 @@ class BaseRobokassaForm(forms.Form):
 
     def _get_signature(self):
         signature_plain = self._get_signature_string()
-        logger.debug("signature plain: {}".format(signature_plain))
         return sha256(signature_plain.encode('utf-8')).hexdigest().upper()
 
     def _get_signature_string(self):
